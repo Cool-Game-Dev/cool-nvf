@@ -93,11 +93,11 @@
               <ul class="toc-list">
                 <li><a href="#ch-release-notes">Release Notes</a>
 <li><a href="#sec-release-26-12">Release 26.12</a>
-<ul><li><a href="#breaking-changes">Breaking changes</a>
+<ul><li><a href="#sec-release-26-12-breaking-changes">Breaking changes</a>
 <li><a href="#sec-release-26-12-changelog">Changelog</a>
 </ul><li><a href="#sec-release-26-07">Release 26.07</a>
 <ul><li><a href="#breaking-changes">Breaking changes</a>
-<li><a href="#sec-release-0-9-changelog">Changelog</a>
+<li><a href="#sec-release-26-07-changelog">Changelog</a>
 </ul><li><a href="#sec-release-0-8">Release 0.8</a>
 <ul><li><a href="#breaking-changes">Breaking changes</a>
 <li><a href="#sec-release-0-8-changelog">Changelog</a>
@@ -134,17 +134,184 @@
 <p>This section lists the release notes for tagged version of <strong>nvf</strong> and the
 current main current main branch</p>
 <h1 id="sec-release-26-12">Release 26.12</h1>
-<h2 id="breaking-changes">Breaking changes</h2>
+<h2 id="sec-release-26-12-breaking-changes">Breaking changes</h2>
 <!-- - Upgrade to nixpkgs 26.11. -->
 <ul>
 <li>Dropping all old deprecations from 26.07 backwards. This is done to keep the
 codebase maintainable.</li>
 </ul>
-<h2 id="sec-release-26-12-changelog">Changelog</h2>
-<p><a href="https://github.com/snoweuph">snoweuph</a></p>
+<p><a href="https://github.com/snoweuph">Snoweuph</a></p>
 <ul>
-<li><code>languages/sql</code>: added tree-sitter queries for highlighting special comments
-from <a href="https://bun.uptrace.dev/">bun ORM</a> and <a href="https://pressly.github.io/goose/">goose</a>.</li>
+<li>
+<p>Split standalone flake template, into flake wiring and actual configuration.
+Also added example for Neovim builtin options and made the flake actually
+valid.</p>
+</li>
+<li>
+<p>Splitting <code>languages.json5</code> from <code>languages.json</code>, because most <code>json</code> and
+<code>jsonc</code> tools don't support it correctly, making it a bad fit to be combined
+into one module, because it creates scenarios where tools are connected to non
+supported filetypes.</p>
+</li>
+<li>
+<p><code>languages.lua</code></p>
+<ul>
+<li>Only enable tree-sitter support if the module itself is enabled.</li>
+<li>Allow configuring <code>lazydev</code> and move it to the modules <code>extensions</code>
+namespace. In this process the default options where also removed, falling
+back to <code>lazydev</code>s own defaults. This was done, due to the old defaults
+being extremely weird and what most people would never want.</li>
+</ul>
+</li>
+<li>
+<p><code>lsp.presets.deno</code>: modified defaults; removed <code>.git</code> as a root marker and
+enabled <code>workspace_require</code>.</p>
+</li>
+<li>
+<p>Disabled/Dropped <code>minimap.codewindow</code> till it supports main branch
+tree-sitter.</p>
+</li>
+<li>
+<p><code>ui.breadcrumbs</code> was removed and completely rebuild under
+<code>statusline.lualine.integrations.breadcrumbs</code>.</p>
+</li>
+<li>
+<p>Removed <code>vim-dirtytalk</code> from <code>spellcheck</code> as it is unmaintained and no longer
+works.</p>
+</li>
+</ul>
+<h2 id="sec-release-26-12-changelog">Changelog</h2>
+<p><a href="https://github.com/snoweuph">Snoweuph</a></p>
+<ul>
+<li>
+<p>Language Modules</p>
+<ul>
+<li>New Modules
+<ul>
+<li><code>awk</code>: with
+<ul>
+<li>Tree-sitter</li>
+<li><code>awk-language-server</code> LSP</li>
+<li><code>gawk</code> formatter</li>
+</ul>
+</li>
+<li><code>http</code>: with
+<ul>
+<li>Tree-sitter</li>
+<li><code>kulala-fmt</code> formatter</li>
+<li><code>kulala-nvim</code> extension</li>
+</ul>
+</li>
+<li><code>lisp</code> with
+<ul>
+<li>Tree-sitter</li>
+<li>Formatter
+<ul>
+<li><code>sblc</code></li>
+<li><code>emacs</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>asciidoc</code> with
+<ul>
+<li>Tree-sitter</li>
+<li>Injected Formatter</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Improved Modules
+<ul>
+<li><code>lua</code>
+<ul>
+<li>Fix arguments for <code>formatter.conform-nvim.presets.stylua</code> to match new
+required order.</li>
+</ul>
+</li>
+<li><code>sql</code>
+<ul>
+<li>Remove <code>sqls.nvim</code> from being enabled by default from
+<code>lsp.presets.sqls</code>, to an optional extension in <code>languages.sql</code>.</li>
+<li>Added tree-sitter highlights query for better injection support.</li>
+<li>Added tree-sitter queries for highlighting special comments from
+<a href="https://bun.uptrace.dev/">bun ORM</a> and <a href="https://pressly.github.io/goose/">goose</a>.</li>
+</ul>
+</li>
+<li><code>go</code>
+<ul>
+<li>Added tree-sitter injections for <code>sqlx</code> queries.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>notes.orgmode</code>: fix default tree-sitter package used.</p>
+</li>
+</ul>
+<p><a href="https://github.com/soliprem">soliprem</a>:</p>
+<ul>
+<li>Lazy load a bunch of stuff:
+<ul>
+<li><code>autocomplete/blink-cmp</code>: lazy-load on insert or command-line entry.</li>
+<li><code>git/hunk-nvim</code>: lazy-load on <code>DiffEditor</code>.</li>
+<li><code>utility/crazy-coverage</code>: lazy-load on coverage commands.</li>
+<li><code>utility/yanky-nvim</code>: lazy-load after UI initialization.</li>
+<li><code>languages/java</code>: lazy-load <code>maven.nvim</code> on Maven commands.</li>
+<li><code>languages/java</code>: lazy-load <code>gradle.nvim</code> on Gradle commands.</li>
+<li><code>plugins/otter</code>: lazy-load <code>otter</code> on keybind.</li>
+<li><code>alpha.nvim</code>: lazy-load.</li>
+<li><code>nvim-colorizer.lua</code>: lazy-load.</li>
+<li><code>conform.nvim</code>: lazy-load.</li>
+<li><code>git-conflict.nvim</code>: lazy-load.</li>
+<li><code>gitsigns.nvim</code>: lazy-load.</li>
+<li><code>highlight-undo.nvim</code>: lazy-load.</li>
+<li><code>img-clip.nvim</code>: lazy-load.</li>
+<li><code>indent-blankline.nvim</code>: lazy-load.</li>
+<li><code>smartcolumn.nvim</code>: lazy-load.</li>
+<li><code>todo-comments.nvim</code>: lazy-load.</li>
+<li><code>nvim-treesitter-context</code>: lazy-load.</li>
+<li><code>typst-preview.nvim</code>: lazy-load.</li>
+<li><code>vim-illuminate</code>: lazy-load.</li>
+<li><code>which-key.nvim</code>: lazy-load.</li>
+<li><code>ccc-nvim</code>: lazy-load.</li>
+</ul>
+</li>
+<li><code>plugins/git/octo-nvim</code>: init.</li>
+</ul>
+<p><a href="https://github.com/gmvar">gmvar</a>:</p>
+<ul>
+<li>Add beancount support under <code>vim.languages.beancount</code> using
+<a href="https://github.com/polarmutex/beancount-language-server">beancount-language-server</a> and <a href="https://github.com/beancount/beancount">bean-format</a>.</li>
+</ul>
+<p><a href="https://github.com/exflikt">Exflikt</a></p>
+<ul>
+<li><code>formatter.conform-nvim.presets.ruff</code>: fix <code>indent-width</code> option whose key
+name was not recognized by <code>ruff format</code>, which in turn exited with an unknown
+key error.</li>
+</ul>
+<p><a href="https://github.com/adam01110">Adam0</a>:</p>
+<ul>
+<li>
+<p>Add <a href="https://github.com/Bekaboo/dropbar.nvim">dropbar.nvim</a> under <code>vim.ui.dropbar-nvim</code> with <code>enable</code> and <code>setupOpts</code>.</p>
+</li>
+<li>
+<p>Add <a href="https://github.com/lewis6991/satellite.nvim">satellite.nvim</a> plugin in <code>vim.visuals.satellite-nvim</code> with <code>enable</code> and
+<code>setupOpts</code>.</p>
+</li>
+<li>
+<p>Add <a href="https://github.com/nemanjamalesija/smart-paste.nvim">smart-paste.nvim</a> plugin in <code>vim.utility.smart-paste-nvim</code> with <code>enable</code>
+and <code>setupOpts</code>.</p>
+</li>
+</ul>
+<p><a href="https://github.com/khanage">khanage</a>:</p>
+<ul>
+<li>
+<p>Reference elixir via <code>beamPackages</code>.</p>
+<pre class="highlight"><code class="language-diff"><span style="color:rgb(232,102,113);">-</span><span style="color:rgb(232,102,113);">pkgs.elixir</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">pkgs.beamPackages.elixir</span><br></code></pre>
+</li>
 </ul>
 <h1 id="sec-release-26-07">Release 26.07</h1>
 <h2 id="breaking-changes">Breaking changes</h2>
@@ -359,7 +526,7 @@ support is moved to <code>vim.languages.haskell.extensions.haskell-tools</code><
 <li>Rust module is now no longer dependant on <code>rustaceanvim</code> by default. Use
 <code>vim.languages.rust.extensions.rustaceanvim.enable</code> if needed.</li>
 </ul>
-<h2 id="sec-release-0-9-changelog">Changelog</h2>
+<h2 id="sec-release-26-07-changelog">Changelog</h2>
 <p><a href="https://github.com/bovf">bovf</a>:</p>
 <ul>
 <li>Removed the deprecated <code>system_open</code> setup option from <code>nvim-tree.lua</code> to
@@ -448,7 +615,7 @@ hard-coded options as default values.</li>
 <ul>
 <li>formatting (use <code>terraform fmt</code> or <code>tofu fmt</code> for <code>tf</code> files)</li>
 <li>LSP config</li>
-<li>Added <code>tofu</code> and <code>tofu-ls</code> as (free) alternative to <code>terrraform</code> and
+<li>Added <code>tofu</code> and <code>tofu-ls</code> as (free) alternative to <code>terraform</code> and
 <code>terraform-ls</code></li>
 </ul>
 </li>
@@ -1946,12 +2113,12 @@ identical clone.</li>
 Lualine. Only <code>vim.ui.breadcrumbs.lualine.winbar</code> is supported for the time
 being.</p>
 <ul>
-<li><a class="option-reference" href="options.html#option-vim.ui.breadcrumbs.lualine.winbar.enable"><code class="nixos-option">vim.ui.breadcrumbs.lualine.winbar.enable</code></a> has been added to allow
+<li><code>vim.ui.breadcrumbs.lualine.winbar.enable</code> has been added to allow
 controlling the default behaviour of the <code>nvim-navic</code> component on Lualine,
 which used to occupy <code>winbar.lualine_c</code> as long as breadcrumbs are enabled.</li>
 <li><code>vim.ui.breadcrumbs.alwaysRender</code> has been renamed to
-<a class="option-reference" href="options.html#option-vim.ui.breadcrumbs.lualine.winbar.alwaysRender"><code class="nixos-option">vim.ui.breadcrumbs.lualine.winbar.alwaysRender</code></a> to be conform to
-the new format.</li>
+<code>vim.ui.breadcrumbs.lualine.winbar.alwaysRender</code> to be conform to the new
+format.</li>
 </ul>
 </li>
 <li>
@@ -2329,8 +2496,7 @@ the presence of line numbers</p>
 configuration.</p>
 </li>
 <li>
-<p>LSP integrated breadcrumbs with <a class="option-reference" href="options.html#option-vim.ui.breadcrumbs.enable"><code class="nixos-option">vim.ui.breadcrumbs.enable</code></a> through
-nvim-navic</p>
+<p>LSP integrated breadcrumbs with <code>vim.ui.breadcrumbs.enable</code> through nvim-navic</p>
 </li>
 <li>
 <p>LSP navigation helper with nvim-navbuddy, depends on nvim-navic (automatically
@@ -2761,11 +2927,11 @@ allows for ordering of the config. Usage is the same is in home-manager's
           <ul class="page-toc-list">
             <li><a href="#ch-release-notes">Release Notes</a>
 <li><a href="#sec-release-26-12">Release 26.12</a>
-<ul><li><a href="#breaking-changes">Breaking changes</a>
+<ul><li><a href="#sec-release-26-12-breaking-changes">Breaking changes</a>
 <li><a href="#sec-release-26-12-changelog">Changelog</a>
 </ul><li><a href="#sec-release-26-07">Release 26.07</a>
 <ul><li><a href="#breaking-changes">Breaking changes</a>
-<li><a href="#sec-release-0-9-changelog">Changelog</a>
+<li><a href="#sec-release-26-07-changelog">Changelog</a>
 </ul><li><a href="#sec-release-0-8">Release 0.8</a>
 <ul><li><a href="#breaking-changes">Breaking changes</a>
 <li><a href="#sec-release-0-8-changelog">Changelog</a>
