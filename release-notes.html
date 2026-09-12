@@ -180,6 +180,18 @@ tree-sitter.</p>
 works.</p>
 </li>
 </ul>
+<p><a href="https://github.com/horriblename">horriblename</a></p>
+<ul>
+<li>Fully migrate lualine to setupOpts.
+<ul>
+<li>
+<p>For lualine sections, you can start by adding <code>map mkLuaInline</code> (use
+<code>mkDefault + mkAfter</code> if you are converting <code>extra*Section</code> instead):</p>
+<pre class="highlight"><code class="language-diff">vim.statusline.lualine&nbsp;=&nbsp;{<br><span style="color:rgb(92,99,112);font-style: italic;">#&nbsp;use&nbsp;`map&nbsp;mkLuaInline`&nbsp;to&nbsp;get&nbsp;something&nbsp;working&nbsp;quick,&nbsp;then</span><br><span style="color:rgb(92,99,112);font-style: italic;">#&nbsp;nixify&nbsp;each&nbsp;option&nbsp;at&nbsp;your&nbsp;own&nbsp;pace</span><br><span style="color:rgb(232,102,113);">-</span><span style="color:rgb(232,102,113);">&nbsp;&nbsp;activeSection.a&nbsp;=&nbsp;[</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">&nbsp;&nbsp;sections.lualine_a&nbsp;=&nbsp;map&nbsp;lib.generators.mkLuaInline&nbsp;[</span><br>&nbsp;&nbsp;&nbsp;&nbsp;"'filetype'"<br>&nbsp;&nbsp;&nbsp;&nbsp;"{'location',&nbsp;some_option&nbsp;=&nbsp;false}"<br>&nbsp;&nbsp;];<br><br><span style="color:rgb(92,99,112);font-style: italic;">#&nbsp;use&nbsp;mkDefault&nbsp;+&nbsp;mkAfter&nbsp;to&nbsp;extend&nbsp;NVF&nbsp;defaults&nbsp;instead&nbsp;of&nbsp;replace</span><br><span style="color:rgb(232,102,113);">-</span><span style="color:rgb(232,102,113);">&nbsp;&nbsp;extraInactiveSection.x&nbsp;=</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">&nbsp;&nbsp;inactive_sections.lualine_x&nbsp;=</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">&nbsp;&nbsp;&nbsp;&nbsp;mkDefault&nbsp;(mkAfter&nbsp;(map&nbsp;lib.generators.mkLuaInline</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"function()&nbsp;return&nbsp;'something'&nbsp;end"<br><span style="color:rgb(232,102,113);">-</span><span style="color:rgb(232,102,113);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]));</span><br>};<br></code></pre>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="sec-release-26-12-changelog">Changelog</h2>
 <p><a href="https://github.com/snoweuph">Snoweuph</a></p>
 <ul>
@@ -305,6 +317,10 @@ key error.</li>
 <p>Add <a href="https://github.com/nemanjamalesija/smart-paste.nvim">smart-paste.nvim</a> plugin in <code>vim.utility.smart-paste-nvim</code> with <code>enable</code>
 and <code>setupOpts</code>.</p>
 </li>
+<li>
+<p>Add <a href="https://github.com/NMAC427/guess-indent.nvim">guess-indent.nvim</a> plugin in <code>vim.utility.guess-indent-nvim</code> with
+<code>enable</code> and <code>setupOpts</code>.</p>
+</li>
 </ul>
 <p><a href="https://github.com/khanage">khanage</a>:</p>
 <ul>
@@ -312,6 +328,13 @@ and <code>setupOpts</code>.</p>
 <p>Reference elixir via <code>beamPackages</code>.</p>
 <pre class="highlight"><code class="language-diff"><span style="color:rgb(232,102,113);">-</span><span style="color:rgb(232,102,113);">pkgs.elixir</span><br><span style="color:rgb(232,102,113);">+</span><span style="color:rgb(152,195,121);">pkgs.beamPackages.elixir</span><br></code></pre>
 </li>
+</ul>
+<p><a href="https://github.com/Marcus441">Marcus441</a>:</p>
+<ul>
+<li><code>languages.angular</code>: fix the misspelled <code>angular-language-serve</code> server name
+in the <code>typescript</code> filetype definition. It registered a phantom server with
+no <code>cmd</code> and left <code>angular-language-server</code> without the <code>typescript</code> filetype,
+so the server never attached to <code>.ts</code> buffers.</li>
 </ul>
 <h1 id="sec-release-26-07">Release 26.07</h1>
 <h2 id="breaking-changes">Breaking changes</h2>
@@ -536,10 +559,9 @@ avoid startup warnings now that upstream uses <code>vim.ui.open()</code>.</li>
 <ul>
 <li>Fixed and updated <code>lualine</code> options:
 <ul>
-<li>Enabled the previously unmapped
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.ignoreFocus"><code class="nixos-option">vim.statusline.lualine.ignoreFocus</code></a>.</li>
-<li>Added <a class="option-reference" href="options.html#option-vim.statusline.lualine.disabledFiletypes.statusline"><code class="nixos-option">vim.statusline.lualine.disabledFiletypes.statusline</code></a> and
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.disabledFiletypes.winbar"><code class="nixos-option">vim.statusline.lualine.disabledFiletypes.winbar</code></a>.</li>
+<li>Enabled the previously unmapped <code>vim.statusline.lualine.ignoreFocus</code>.</li>
+<li>Added <code>vim.statusline.lualine.disabledFiletypes.statusline</code> and
+<code>vim.statusline.lualine.disabledFiletypes.winbar</code>.</li>
 </ul>
 </li>
 </ul>
@@ -2349,9 +2371,9 @@ enabled through <code>vim.languages.css</code> and <code>vim.languages.tailwind<
 <li>
 <p>Lualine module now allows customizing <code>always_divide_middle</code>, <code>ignore_focus</code>
 and <code>disabled_filetypes</code> through the new options:
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.alwaysDivideMiddle"><code class="nixos-option">vim.statusline.lualine.alwaysDivideMiddle</code></a>,
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.ignoreFocus"><code class="nixos-option">vim.statusline.lualine.ignoreFocus</code></a> and
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.disabledFiletypes.statusline"><code class="nixos-option">vim.statusline.lualine.disabledFiletypes.statusline</code></a>).</p>
+<code>vim.statusline.lualine.alwaysDivideMiddle</code>,
+<code>vim.statusline.lualine.ignoreFocus</code> and
+<code>vim.statusline.lualine.disabledFiletypes.statusline</code>).</p>
 </li>
 <li>
 <p>Updated all plugin inputs to their latest versions (<strong>21.04.2024</strong>) - this
@@ -2914,9 +2936,8 @@ allows for ordering of the config. Usage is the same is in home-manager's
 <pre class="highlight"><code class="language-nix"><span style="color:rgb(171,178,191);">vim</span><span style="color:rgb(132,139,152);">.</span><span style="color:rgb(97,175,239);">luaConfigRC</span>&nbsp;<span style="color:rgb(171,178,191);">=</span>&nbsp;<span style="color:rgb(171,178,191);">lib</span><span style="color:rgb(132,139,152);">.</span><span style="color:rgb(86,182,194);">nvim</span><span style="color:rgb(132,139,152);">.</span><span style="color:rgb(86,182,194);">dag</span><span style="color:rgb(132,139,152);">.</span><span style="color:rgb(86,182,194);">entryAnywhere</span>&nbsp;<span style="color:rgb(152,195,121);">"</span><span style="color:rgb(152,195,121);">config&nbsp;here</span><span style="color:rgb(152,195,121);">"</span><br></code></pre>
 <p><a href="https://github.com/MoritzBoehme">MoritzBoehme</a>:</p>
 <ul>
-<li><code>catppuccin</code> theme is now available as a neovim theme
-<a class="option-reference" href="options.html#option-vim.theme.style"><code class="nixos-option">vim.theme.style</code></a> and Lualine theme
-<a class="option-reference" href="options.html#option-vim.statusline.lualine.theme"><code class="nixos-option">vim.statusline.lualine.theme</code></a>.</li>
+<li><code>catppuccin</code> theme is now available as a neovim theme <code>vim.theme.style</code> and
+Lualine theme <code>vim.statusline.lualine.theme</code>.</li>
 </ul>
 </body></html></main>
       </div>
